@@ -1,0 +1,17 @@
+{
+    "credentials": {
+        "email": "mrkz@Delivery.iq",
+        "password": "998991a"
+     },
+	 "isSuspended": false,
+    "suspensionReason": "تم ايقاف الطلبات الرجاء التواصل مع الدعم الفني",
+    "forceLogout": false,
+    "areas": [
+	{ "name": "جميع مناطق شارع فلسطين", "price": "3000" },
+	{ "name": "اذا لم تجد المنطقه تواصل معنا ونضيفها", "price": "00010" }
+],
+    "restaurantDetails": {
+        "location": "https://maps.app.goo.gl/p4CADco9BpYRsLru5",
+        "serviceFee": 0
+    }
+}

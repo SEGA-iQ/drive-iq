@@ -1,170 +1,262 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كباتن دليفري العراق </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            max-width: 500px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #007bff;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            font-weight: 600;
-            color: #333;
-        }
-        .form-control {
-            border-radius: 8px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            font-weight: 600;
-            padding: 12px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .alert {
-            border-radius: 8px;
-        }
-        .error-message {
-            color: #d9534f;
-            font-size: 0.9rem;
-        }
-        #successMessage, #errorMessage {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دلفري العراق - نظام السائقين</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
-    <div class="container">
-        <h2 class="text-center">دليفري العراق </h2>
-        <form id="requestForm">
-            <div class="form-group">
-                <label for="captainName">الاسم الثلاثي للكابتن:</label>
-                <input type="text" id="captainName" class="form-control" required>
-                <span id="captainNameError" class="error-message"></span>
-            </div>
-            <div class="form-group">
-                <label for="captainPhone">رقم هاتف الكابتن:</label>
-                <input type="tel" id="captainPhone" class="form-control" required pattern="^[0-9]+$">
-                <span id="captainPhoneError" class="error-message"></span>
-            </div>
-            <div class="form-group">
-                <label for="requestType">نوع الطلب:</label>
-                <select id="requestType" class="form-control" required>
-                    <option value="">اختر نوع الطلب</option>
-                    <option value="طلب إجازة">طلب إجازة</option>
-                    <option value="مشكلة">مشكلة</option>
-                    <option value="شكوى">شكوى</option>
-                    <option value="استقالة">استقالة</option>
-                    <option value="غيرها">غيرها</option>
-                </select>
-                <span id="requestTypeError" class="error-message"></span>
-            </div>
-            <div class="form-group">
-                <label for="description">وصف الطلب:</label>
-                <textarea id="description" class="form-control" rows="4" required></textarea>
-                <span id="descriptionError" class="error-message"></span>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">إرسال الطلب</button>
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <img src="attached_assets/new-logo.png" alt="كباتن دلفري العراق" class="logo">
+        <div class="header-text">
+          <h1>كباتن دلفري العراق</h1>
+          <p>نظام إدارة طلبات السائقين</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- صفحة تسجيل الدخول -->
+    <div id="loginPage" class="page active">
+      <div class="form-container">
+        <div class="form-logo-container">
+          <img src="attached_assets/new-logo.png" alt="كباتن دلفري العراق" class="small-logo">
+          <p class="form-company-name">كباتن دلفري العراق</p>
+        </div>
+        <h2>دخول السائق</h2>
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="driverName">الاسم الثلاثي (باللغة العربية):</label>
+            <input type="text" id="driverName" required placeholder="مثال: محمد علي حسن">
+          </div>
+          <div class="input-group">
+            <label for="phoneNumber">رقم الهاتف (11 رقم):</label>
+            <input type="tel" id="phoneNumber" required placeholder="07xxxxxxxxx" maxlength="11">
+          </div>
+          <button type="submit">دخول</button>
         </form>
-        <div id="successMessage" class="alert alert-success mt-3">تم إرسال الطلب بنجاح!</div>
-        <div id="errorMessage" class="alert alert-danger mt-3">حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.</div>
+      </div>
     </div>
 
-    <script>
-        document.getElementById('requestForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+    <!-- الصفحة الرئيسية -->
+    <div id="mainPage" class="page">
+      <div class="welcome-section">
+        <h2>مرحباً <span id="driverNameDisplay"></span></h2>
+        <p>رقم الهاتف: <span id="driverPhone"></span></p>
+      </div>
 
-            const captainName = document.getElementById('captainName').value.trim();
-            const captainPhone = document.getElementById('captainPhone').value.trim();
-            const requestType = document.getElementById('requestType').value;
-            const description = document.getElementById('description').value;
+      <div class="actions-grid">
+        <button class="action-btn vacation-btn" onclick="showVacationForm()">
+          📅 طلب إجازة
+        </button>
+        <button class="action-btn complaint-btn" onclick="showComplaintForm()">
+          📝 رفع شكوى
+        </button>
+        <button class="action-btn logout-btn" onclick="logout()">
+          🚪 تسجيل خروج
+        </button>
+      </div>
+    </div>
 
-            let valid = true;
+    <!-- نموذج طلب الإجازة -->
+    <div id="vacationPage" class="page">
+      <div class="form-container">
+        <div class="form-logo-container">
+          <img src="attached_assets/new-logo.png" alt="كباتن دلفري العراق" class="small-logo">
+          <p class="form-company-name">كباتن دلفري العراق</p>
+        </div>
+        <h2>📅 طلب إجازة</h2>
+        <form id="vacationForm">
+          <div class="vacation-date-section">
+            <h3>📅 توقيت الإجازة</h3>
 
-            // التحقق من الاسم الثلاثي للكابتن
-            if (captainName.split(" ").length < 3) {
-                document.getElementById('captainNameError').textContent = 'يرجى إدخال الاسم الثلاثي الكامل';
-                valid = false;
-            } else {
-                document.getElementById('captainNameError').textContent = '';
-            }
+            <div class="date-time-grid">
+              <div class="input-group">
+                <label for="vacationStartDate">تاريخ البداية:</label>
+                <input type="date" id="vacationStartDate" required>
+              </div>
 
-            // التحقق من رقم هاتف الكابتن
-            if (!/^[0-9]+$/.test(captainPhone) || captainPhone.length < 8) {
-                document.getElementById('captainPhoneError').textContent = 'يرجى إدخال رقم هاتف صحيح يحتوي على أرقام فقط';
-                valid = false;
-            } else {
-                document.getElementById('captainPhoneError').textContent = '';
-            }
+              <div class="input-group">
+                <label for="vacationEndDate">تاريخ النهاية:</label>
+                <input type="date" id="vacationEndDate" required>
+              </div>
+            </div>
 
-            // التحقق من الحقول الأخرى
-            if (!requestType) {
-                document.getElementById('requestTypeError').textContent = 'يرجى اختيار نوع الطلب';
-                valid = false;
-            } else {
-                document.getElementById('requestTypeError').textContent = '';
-            }
+            <div class="vacation-type-selector">
+              <label>نوع الإجازة:</label>
+              <div class="radio-group">
+                <div class="radio-option">
+                  <input type="radio" id="fullDay" name="vacationType" value="يوم كامل" checked>
+                  <label for="fullDay">🌅 يوم كامل</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="halfDay" name="vacationType" value="نصف يوم">
+                  <label for="halfDay">🕐 نصف يوم</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="customTime" name="vacationType" value="وقت محدد">
+                  <label for="customTime">⏰ وقت محدد</label>
+                </div>
+              </div>
+            </div>
 
-            if (!description.trim()) {
-                document.getElementById('descriptionError').textContent = 'يرجى إدخال وصف الطلب';
-                valid = false;
-            } else {
-                document.getElementById('descriptionError').textContent = '';
-            }
+            <div id="halfDayOptions" class="time-options hidden">
+              <div class="radio-group">
+                <div class="radio-option">
+                  <input type="radio" id="morning" name="halfDayTime" value="النصف الأول (8:00 ص - 2:00 م)">
+                  <label for="morning">🌅 النصف الأول (8:00 ص - 2:00 م)</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="evening" name="halfDayTime" value="النصف الثاني (2:00 م - 8:00 م)">
+                  <label for="evening">🌇 النصف الثاني (2:00 م - 8:00 م)</label>
+                </div>
+              </div>
+            </div>
 
-            if (!valid) return;
+            <div id="customTimeOptions" class="time-options hidden">
+              <div class="time-picker-grid">
+                <div class="input-group">
+                  <label for="startTime">من الساعة:</label>
+                  <input type="time" id="startTime">
+                </div>
+                <div class="input-group">
+                  <label for="endTime">إلى الساعة:</label>
+                  <input type="time" id="endTime">
+                </div>
+              </div>
+            </div>
 
-            // إرسال الطلب إلى Telegram
-            sendToTelegram(captainName, captainPhone, requestType, description);
-        });
+            <div class="duration-display">
+              <div class="duration-card">
+                <span class="duration-icon">📊</span>
+                <div class="duration-info">
+                  <span class="duration-label">مدة الإجازة المتوقعة:</span>
+                  <span id="calculatedDuration" class="duration-value">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="vacationReason">سبب الإجازة:</label>
+            <textarea id="vacationReason" required placeholder="اكتب سبب طلب الإجازة..."></textarea>
+          </div>
+          <div class="form-buttons">
+            <button type="submit">إرسال الطلب</button>
+            <button type="button" onclick="showMainPage()">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-        function sendToTelegram(captainName, captainPhone, requestType, description) {
-            const token = '2094023494:AAEpX9YYAv0mWx5qR3a2HJV5g_r9XbTrjNo';
-            const chatId = '@capten_iraq';
-            const message = `الاسم الثلاثي للكابتن: ${captainName}\nرقم هاتف الكابتن: ${captainPhone}\nنوع الطلب: ${requestType}\nوصف الطلب: ${description}`;
+    <!-- نموذج الشكوى -->
+    <div id="complaintPage" class="page">
+      <div class="form-container">
+        <div class="form-logo-container">
+          <img src="attached_assets/new-logo.png" alt="كباتن دلفري العراق" class="small-logo">
+          <p class="form-company-name">كباتن دلفري العراق</p>
+        </div>
+        <h2>📝 رفع شكوى</h2>
+        <form id="complaintForm">
+          <div class="input-group">
+            <label for="complaintType">نوع الشكوى:</label>
+            <select id="complaintType" required>
+              <option value="">اختر نوع الشكوى</option>
+              <option value="مشكلة في السيارة">مشكلة في السيارة</option>
+              <option value="مشكلة مع العملاء">مشكلة مع العملاء</option>
+              <option value="مشكلة في الراتب">مشكلة في الراتب</option>
+              <option value="مشكلة في ساعات العمل">مشكلة في ساعات العمل</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="complaintDetails">تفاصيل الشكوى:</label>
+            <textarea id="complaintDetails" required placeholder="اكتب تفاصيل الشكوى بدقة..."></textarea>
+          </div>
+          <div class="form-buttons">
+            <button type="submit">إرسال الشكوى</button>
+            <button type="button" onclick="showMainPage()">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+    <!-- رسالة التأكيد -->
+    <div id="successMessage" class="success-message">
+      <div class="success-content">
+        <h3>✅ تم الإرسال بنجاح</h3>
+        <p>تم إرسال طلبك بنجاح وسيتم مراجعته قريباً</p>
+        <button onclick="hideSuccessMessage()">موافق</button>
+      </div>
+    </div>
 
-            fetch(url)
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById('requestForm').reset();
-                        document.getElementById('successMessage').style.display = 'block';
-                        document.getElementById('errorMessage').style.display = 'none';
-                    } else {
-                        throw new Error('Network response was not ok');
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('errorMessage').style.display = 'block';
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-        }
-    </script>
+
+
+    <!-- صفحة إنشاء حساب جديد -->
+    <div id="registerPage" class="page">
+      <div class="form-container">
+        <div class="form-logo-container">
+          <img src="attached_assets/new-logo.png" alt="كباتن دلفري العراق" class="small-logo">
+          <p class="form-company-name">كباتن دلفري العراق</p>
+        </div>
+        <h2>🆕 إنشاء حساب جديد</h2>
+        <form id="registerForm">
+          <div class="input-group">
+            <label for="newDriverName">اسم السائق:</label>
+            <input type="text" id="newDriverName" required placeholder="أدخل اسمك الكامل">
+          </div>
+          <div class="input-group">
+            <label for="newDriverPhone">رقم الهاتف:</label>
+            <input type="tel" id="newDriverPhone" required placeholder="07xxxxxxxxx">
+          </div>
+          <div class="input-group">
+            <label for="employeeId">رقم الموظف (اختياري):</label>
+            <input type="text" id="employeeId" placeholder="رقم الموظف إن وجد">
+          </div>
+          <div class="input-group">
+            <label for="department">القسم:</label>
+            <select id="department" required>
+              <option value="">اختر القسم</option>
+              <option value="توصيل داخلي">توصيل داخلي</option>
+              <option value="توصيل خارجي">توصيل خارجي</option>
+              <option value="نقل بضائع">نقل بضائع</option>
+              <option value="خدمة عملاء">خدمة عملاء</option>
+            </select>
+          </div>
+          <div class="form-buttons">
+            <button type="submit">إرسال طلب التسجيل</button>
+            <button type="button" onclick="showLoginPage()">العودة لتسجيل الدخول</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+
+
+    <!-- نافذة الخطأ المنبثقة -->
+    <div id="errorModal" class="modal-overlay">
+      <div class="modal-content error-modal">
+        <div class="modal-header">
+          <span class="close-btn" onclick="closeErrorModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="error-icon">⚠️</div>
+          <h3 id="errorTitle">خطأ في البيانات</h3>
+          <p id="errorMessage">يرجى التحقق من البيانات المدخلة</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-primary" onclick="closeErrorModal()">موافق</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
 </body>
+
 </html>

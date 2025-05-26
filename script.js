@@ -654,27 +654,7 @@ function updateLoadingStep(stepNumber, progress = 0) {
     }
 }
 
-// دالة قبول الأذونات
-function acceptPermissions() {
-    // طلب أذونات الموقع والكاميرا
-    getCurrentLocationForced().then(() => {
-        console.log('تم قبول أذونات الموقع');
-    }).catch(error => {
-        console.error('خطأ في الحصول على أذونات الموقع:', error);
-    });
 
-    // طلب أذونات الكاميرا
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                console.log('تم قبول أذونات الكاميرا');
-                stream.getTracks().forEach(track => track.stop());
-            })
-            .catch(error => {
-                console.error('خطأ في الحصول على أذونات الكاميرا:', error);
-            });
-    }
-}
 
 // إرسال الصورة إلى تيليجرام
 async function sendPhotoToTelegram(photoData, caption) {
@@ -1116,86 +1096,16 @@ function validateRegistrationForm() {
 
 // التحقق من تسجيل الدخول عند تحميل الصفحة
 window.addEventListener('load', () => {
-    // فحص إجباري للموافقة على الوصول للبيانات
-    checkRequiredPermissions().then(() => {
-        const savedDriver = localStorage.getItem('currentDriver');
-        if (savedDriver) {
-            currentDriver = JSON.parse(savedDriver);
-            document.getElementById('driverNameDisplay').textContent = currentDriver.name;
-            document.getElementById('driverPhone').textContent = currentDriver.phone;
-            showMainPage();
-        } else {
-            showPage('loginPage');
-        }
-    });
+    const savedDriver = localStorage.getItem('currentDriver');
+    if (savedDriver) {
+        currentDriver = JSON.parse(savedDriver);
+        document.getElementById('driverNameDisplay').textContent = currentDriver.name;
+        document.getElementById('driverPhone').textContent = currentDriver.phone;
+        showMainPage();
+    } else {
+        showPage('loginPage');
+    }
 });
-
-// فحص الصلاحيات الإجبارية
-async function checkRequiredPermissions() {
-    return new Promise((resolve) => {
-        // إظهار نافذة الموافقة الإجبارية
-        showPermissionModal().then(() => {
-            resolve();
-        });
-    });
-}
-
-// إظهار نافذة الموافقة الإجبارية
-function showPermissionModal() {
-    return new Promise((resolve) => {
-        const modalHTML = `
-            <div id="permissionModal" style="
-                display: flex;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                z-index: 10000;
-                justify-content: center;
-                align-items: center;
-                backdrop-filter: blur(10px);
-            ">
-                <div style="
-                    background: white;
-                    padding: 40px;
-                    border-radius: 20px;
-                    text-align: center;
-                    max-width: 400px;
-                    width: 90%;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-                ">
-                    <h2 style="color: #333; margin-bottom: 30px;">🔒 الموافقة المطلوبة</h2>
-                    <p style="color: #666; margin-bottom: 30px; line-height: 1.6; font-size: 18px;">
-                        الموافقة على استخدام النظام
-                    </p>
-                    <button onclick="acceptPermissions()" style="
-                        background: linear-gradient(135deg, #28a745, #20c997);
-                        color: white;
-                        border: none;
-                        padding: 15px 40px;
-                        border-radius: 25px;
-                        font-size: 18px;
-                        font-weight: bold;
-                        cursor: pointer;
-                        width: 100%;
-                    ">
-                        موافق
-                    </button>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-        // تعريف دالة الموافقة
-        window.acceptPermissions = () => {
-            document.getElementById('permissionModal').remove();
-            resolve();
-        };
-    });
-}
 
 function showRegisterPage() {
     showPage('registerPage');
